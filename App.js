@@ -1,19 +1,45 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import Home from './src/components/home';
-import Lista from './src/components/checklist';
-
-const Stack = createNativeStackNavigator();
+import Tabs from './src/components/Tabs'
+import { useEffect, useState } from "react"
+import useSession from "./src/hooks/useSession"
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Login } from './src/pages/Login';
 
 const App = () => {
+  const [initial, setInitial] = useState('')
+  const { usuario } = useSession()
+  const Stack = createNativeStackNavigator()
+  useEffect(() => {
+    if(usuario === null) {
+      setInitial('Login')
+    } else {
+      setInitial('Inicio')
+    }
+  })
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Taller de Programación IV'>
-        <Stack.Screen name="Taller de Programación IV" component={Home} />
-        <Stack.Screen name="Tareas" component={Lista} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+         <Stack.Navigator initialRouteName={initial}>
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                headerShown: false,
+                tabBarStyle: { display: 'none' }
+              }}
+            />
+            <Stack.Screen
+              name="Inicio"
+              component={Tabs}
+              options={{
+                headerShown: false,
+                tabBarStyle: { display: 'none' }
+              }}
+            />
+          </Stack.Navigator>
+      </NavigationContainer>
+    </>
   )
 }
 
